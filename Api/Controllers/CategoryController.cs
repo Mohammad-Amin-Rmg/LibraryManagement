@@ -28,7 +28,7 @@ namespace Api.Controllers
                {
                    Name = x.Name,
                    Description = x.Description,
-                   Books = x.BookCategories.Select(x => x.Book.Title).ToList()
+                  
                }).ToList();
             return category;
         }
@@ -46,7 +46,7 @@ namespace Api.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ApiResult> Update(int id, Category category, CancellationToken cancellationToken)
+        public async Task<ApiResult> Update(int id, CategoryDto category, CancellationToken cancellationToken)
         {
             var updateCategory = await _categoryRepository.GetByIdAsync(cancellationToken, id);
             updateCategory.Name = category.Name;

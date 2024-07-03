@@ -10,7 +10,6 @@ namespace LibraryManagement.Models
     public class Language: IEntity
     {
         public int Id { get; set; }
-        public string Title { get; set; }
-        public Book Book { get; set; }
+        public string Name { get; set; }
     }
 }

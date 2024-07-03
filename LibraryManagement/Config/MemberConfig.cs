@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Data.Config
 {
-    public class MemberConfig : BaseEntity, IEntityTypeConfiguration<Member>
+    public class MemberConfig : IEntityTypeConfiguration<Member>
     {
         public void Configure(EntityTypeBuilder<Member> builder)
         {

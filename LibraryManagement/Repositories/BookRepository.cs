@@ -3,6 +3,7 @@ using Data.Contracts;
 using Data.Repositories.Models;
 using LibraryManagement.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Data.Repositories
 {
@@ -16,19 +17,20 @@ namespace Data.Repositories
 
         public async Task<List<BookDto>> GetDetailsBook(int id)
         {
+            var bookSatae = _context.Books.Select(x => x.Borrows.Select(x => x.ReturnedDate));
             var book = _context.Books
                         .Where(x => x.Id == id)
                         .Select(x => new BookDto
                         {
                             Title = x.Title,
                             Description = x.Description,
+                            IsBorrowed = x.Borrows.Any(x => x.ReturnedDate == null),
                             Author = x.BookAuthors.Select(x => x.Author.Name).ToList(),
-                            Category = x.BookCategories.Select(x => x.Category.Name).ToList(),
+                            Categories = x.BookCategories.Select(x => x.Category.Name).ToList(),
                             Publisher = x.Publisher,
                             BorrowsCount = x.Borrows.Select(x => x.Id).Count(),
                         }).ToList();
 
-            var borrowBook = _context.Borrows.Where(x => x.ReturnedDate != null).Select(x => x.Book).Select(x => x.Title).ToList();
 
             return book;
         }
@@ -40,7 +42,7 @@ namespace Data.Repositories
                 {
                     Title = x.Title,
                     Authors = x.BookAuthors.Select(x => x.Author).ToList(),
-                    Categories = x.BookCategories.Select(x => x.Category).ToList(),
+                    Categories = x.BookCategories.Select(x => x.Category.Name).ToList(),
                     Description = x.Description,
                     Publisher = x.Publisher
                 }).ToList();

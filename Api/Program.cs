@@ -2,7 +2,6 @@ using Data.Contexts;
 using Data.Contracts;
 using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +17,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<IBookRepository, BookRepository>();
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+builder.Services.AddTransient<IMemberRepository, MemberRepository>();
 
 var app = builder.Build();
 

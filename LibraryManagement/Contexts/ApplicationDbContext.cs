@@ -20,6 +20,7 @@ namespace Data.Contexts
         public DbSet<Borrow> Borrows { get; set; }
         public DbSet<BookCategory> BookCategories { get; set; }
         public DbSet<BookAuthor> BookAuthors { get; set; }
+        public DbSet<Language> Languages { get; set; }
 
         //string connectionString = "Host=localhost; Database=postgres; Username=postgres; Password=147852";
 
@@ -27,6 +28,7 @@ namespace Data.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(MemberConfig).Assembly);
+            
             //modelBuilder.Entity<Book>().HasNoKey();
         }
     }

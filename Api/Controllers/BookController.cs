@@ -63,16 +63,30 @@ public class BookController : ControllerBase
     }
 
     [HttpGet("search")]
-    public async Task<ApiResult<Book>> Search([FromQuery] string title, string author, string category, CancellationToken cancellationToken)
+    public async Task<ApiResult<Book>> Search([FromQuery] string? title, [FromQuery] int? categoryId, string? author, string? category, CancellationToken cancellationToken)
     {
-        var book = await _bookRepository.TableNoTracking
-            .Where(x => x.Title.Contains(title))
-            .Where(x => x.BookAuthors.Select(x => x.Author.Name).Contains(author))
-            .Where(x => x.BookCategories.Select(x => x.Category.Name).Contains(category))
-            .FirstOrDefaultAsync();
+        var query = _bookRepository.TableNoTracking;
+        if (title is not null)
+        {
+            query = query.Where(x => x.Title.Contains(title));
+        }
+        if (categoryId is not null)
+        {
+            query = query.Where(x => x.BookCategories.Select(x => x.CategoryId).Contains(categoryId.Value));
+        }
+        if (author is not null)
+        {
+            query = query.Where(x => x.BookAuthors.Select(x => x.Author.Name).Contains(author));
+        }
+        if (category is not null)
+        {
+            query = query.Where(x => x.BookCategories.Select(x => x.Category.Name).Contains(category));
+        }
+        var book = await query.FirstOrDefaultAsync();
 
         if (book is null)
             return NotFound();
+
         return book;
     }
 
@@ -91,16 +105,22 @@ public class BookController : ControllerBase
         return undeletedBooks;
     }
 
-    [HttpPut]
-    public async Task Update(int id, Book book, CancellationToken cancellationToken)
+    [HttpPut("{id:int}")]
+    public async Task<ApiResult> Update(int id, BookDto book, CancellationToken cancellationToken)
     {
         var bookUpdate = await _bookRepository.GetByIdAsync(cancellationToken, id);
-        bookUpdate.Title = book.Title;
-        bookUpdate.Description = book.Description;
-        bookUpdate.Publisher = book.Publisher;
-        bookUpdate.Categories = book.Categories;
 
+        if (bookUpdate is not null)
+        {
+            var category = bookUpdate.BookCategories.Select(x => x.Category.Name);
+
+            bookUpdate.Title = book.Title;
+            bookUpdate.Description = book.Description;
+            bookUpdate.Publisher = book.Publisher;
+            category = book.Categories;
+        }
         await _bookRepository.UpdateAsync(bookUpdate, cancellationToken);
+        return Ok();
     }
 }
 

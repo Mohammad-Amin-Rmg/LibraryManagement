@@ -13,12 +13,13 @@ namespace Data.Repositories.Models
         public required string Title { get; set; }
         public List<Author>? Authors { get; set; }
         public List<string>? Author { get; set; }
-        public List<Category>? Categories { get; set; }
-        public List<string>? Category { get; set; }
+
+        //public List<Category>? Categories { get; set; }
+        public List<string>? Categories { get; set; }
         public int BorrowsCount { get; set; }
         public bool IsBorrowed { get; set; }
         public string? Description { get; set; }
         public string? Publisher { get; set; }
-        public List<int> CategoryIds { get; set; }
+        public List<int>? CategoryIds { get; set; }
     }
 }
