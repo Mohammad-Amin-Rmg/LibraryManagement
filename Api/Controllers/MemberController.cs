@@ -61,28 +61,52 @@ namespace Api.Controllers
             return Ok();
         }
 
-        [HttpPost("{id:int}")]
-        public async Task<ApiResult<Borrow>> Borrow(int id, [FromBody] Member member, CancellationToken cancellationToken)
+        [HttpPost("borrow")]
+        public async Task<ApiResult> Borrow([FromBody] BorrowDto borrowDto, CancellationToken cancellationToken)
         {
-            var stateOfBook = _context.Books.Select(x => x.Borrows.Select(x => x.ReturnedDate));
-            var stateOfMember = _context.Members.Select(x => x.Borrows.Select(x => x.ReturnedDate));
-            if (stateOfMember is not null && stateOfMember is not null)
+            //var query = _memberRepository.TableNoTracking;
+            //query.Where(x=>x.Id == borrowDto.MemberId).Any(x=>x.Borrows.Any(x=>x.ReturnedDate == null ));
+            //var x =  _context.Members.Select(x)
+
+            var isMemberBorrowedBook = _context.Borrows.Where(x => x.MemberId == borrowDto.MemberId).Any(x => x.ReturnedDate == null);
+            var isBookBorrowd = _context.Borrows.Where(x => x.BookId == borrowDto.BookId).Any(x => x.ReturnedDate == null);
+
+            if (!(isMemberBorrowedBook && isBookBorrowd))
             {
                 var newBorrow = new Borrow()
                 {
-                    BookId = id,
-                    MemberId = member.Id,
+                    BookId = borrowDto.BookId,
+                    MemberId = borrowDto.MemberId,
                     BorrowDate = DateTime.Now
                 };
-                _context.Borrows.Add(newBorrow);
             }
             else
             {
-                return NotFound("کتاب در امانت است");
+                return new ApiResult(false, ApiStatusCode.NotFound, "کتاب یا توسط فرد دیگری قرض گرغته شده است یا کاربر قبلا ان را قرض گرفته است");
             }
+            await _context.SaveChangesAsync(cancellationToken);
+            return Ok();
+        }
+
+        [HttpPut("returneborrow")]
+        public async Task<ApiResult> ReturneBorrow(int borrowId, CancellationToken cancellationToken)
+        {
+            //var returnBorrow = _memberRepository.GetByIdAsync(cancellationToken, borrowDto.MemberId);
+            //var borrow = _context.Borrows.Select(x => x.BorrowDate).FirstOrDefault();
+            //var query = _context.Borrows.Where(x => x.Id == borrowDto.MemberId);
+
+            var borrow = await _context.Borrows.FindAsync(borrowId);
+            if (borrow == null)
+            {
+                return NotFound();
+            }
+
+            borrow.ReturnedDate = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
 
             return Ok();
         }
+
 
     }
 }

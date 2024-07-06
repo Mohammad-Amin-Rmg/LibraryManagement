@@ -1,6 +1,7 @@
 using Data.Contexts;
 using Data.Contracts;
 using Data.Repositories;
+using LibraryManagement.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IBookRepository, BookRepository>();
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 builder.Services.AddTransient<IMemberRepository, MemberRepository>();
+builder.Services.AddTransient<IAuthorRepository, AuthorRepository>();
+builder.Services.AddTransient<ILanguageRepository, LanguageRepository>();
+builder.Services.AddTransient<IBorrowRepository , BorrowRepository>();
+
 
 var app = builder.Build();
 

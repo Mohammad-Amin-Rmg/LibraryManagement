@@ -28,7 +28,7 @@ namespace Data.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(MemberConfig).Assembly);
-            
+            //modelBuilder.Entity<Book>().HasOne(x => x.Language).WithOne(x => x.);
             //modelBuilder.Entity<Book>().HasNoKey();
         }
     }

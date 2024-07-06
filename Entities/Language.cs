@@ -1,4 +1,6 @@
 ﻿using Entities;
+using LibraryManagement.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +13,15 @@ namespace LibraryManagement.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+    
     }
 }
+
+
+//protected override void OnModelCreating(ModelBuilder modelBuilder)
+//{
+//    modelBuilder.Entity<Language>()
+//        .HasOne(l => l.Book)
+//        .WithOne(b => b.Language)
+//        .HasForeignKey<Book>(b => b.LanguageId);
+//}

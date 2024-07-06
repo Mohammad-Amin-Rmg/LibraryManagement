@@ -43,7 +43,8 @@ public class BookController : ControllerBase
         {
             Title = bookDto.Title,
             Description = bookDto.Description,
-            Publisher = bookDto.Publisher
+            Publisher = bookDto.Publisher,
+            
         };
         await _bookRepository.Add(book, cancellationToken);
 
